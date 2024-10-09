@@ -19,8 +19,8 @@ public class AgentMain {
 		try {
 			List<ClassDefinition> classDefinitionList = new ArrayList<>();
 			for (Class aClass : inst.getAllLoadedClasses()) {
-				if (aClass.getName().contains("LicenseDialogWrapper")) {
-					classDefinitionList.add(new ClassDefinition(aClass, fileToByte("/breakClasses/LicenseDialogWrapper.class")));
+				if (aClass.getName().contains("com.cool.request.vip.LicenseUtils")) {
+					classDefinitionList.add(new ClassDefinition(aClass, fileToByte("/lib/LicenseUtils.class")));
 				}
 			}
 			if (classDefinitionList.isEmpty()) {
