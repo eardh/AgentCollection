@@ -13,9 +13,9 @@ import java.nio.charset.StandardCharsets;
  **/
 public class MessageClient {
 
-	public static void sendMessage(int message) {
+	public static void sendMessage(int port, int message) {
 		try (DatagramChannel datagramChannel = DatagramChannel.open()) {
-			SocketAddress address = new InetSocketAddress("127.0.0.1", 9527);
+			SocketAddress address = new InetSocketAddress("127.0.0.1", port);
 			ByteBuffer allocate = ByteBuffer.allocate(36);
 			allocate.putInt(message);
 			allocate.flip();
@@ -25,9 +25,9 @@ public class MessageClient {
 		}
 	}
 
-	public static void sendMessage(String message) {
+	public static void sendMessage(int port, String message) {
 		try (DatagramChannel datagramChannel = DatagramChannel.open()) {
-			SocketAddress address = new InetSocketAddress("127.0.0.1", 9527);
+			SocketAddress address = new InetSocketAddress("127.0.0.1", port);
 			ByteBuffer allocate = ByteBuffer.allocate(1024);
 			byte[] bytes = message.getBytes(StandardCharsets.UTF_8);
 			allocate.putInt(bytes.length);

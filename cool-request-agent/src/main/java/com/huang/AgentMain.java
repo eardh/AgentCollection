@@ -14,25 +14,35 @@ import java.util.*;
 public class AgentMain {
 
 	public static void agentmain(String agentArgs, Instrumentation inst) {
-		main(agentArgs, inst);
+		doAgentmain(agentArgs, inst);
 	}
 
-	private synchronized static void main(String agentArgs, Instrumentation inst) {
+	private synchronized static void doAgentmain(String agentArgs, Instrumentation inst) {
+		Map<String, String> paramMap = parseArgs(agentArgs);
+		int port = Integer.parseInt(paramMap.getOrDefault("port", "9527"));
 		try {
 			Class.forName("com.huang.common.constant.AgentContext");
 			if (AgentContext.ATTACHED) {
-				MessageClient.sendMessage(1);
+				MessageClient.sendMessage(port, 1);
 				return;
 			}
 			inst.addTransformer(new DefaultClassFileTransformer(), true);
 			inst.retransformClasses(reloadLoadedClass(inst).toArray(new Class[0]));
-			MessageClient.sendMessage(1);
-		} catch (Throwable e) {
-			MessageClient.sendMessage(e.toString());
-			MessageClient.sendMessage(0);
-		} finally {
+			MessageClient.sendMessage(port, 1);
 			AgentContext.ATTACHED = true;
+		} catch (Throwable e) {
+			MessageClient.sendMessage(port, 0);
 		}
+	}
+
+	private static Map<String, String> parseArgs(String agentArgs) {
+		Map<String, String> map = new HashMap<>();
+		String[] paramList = agentArgs.trim().split(";");
+		for (String param : paramList) {
+			String[] tuples = param.trim().split("=");
+			map.put(tuples[0], tuples[1]);
+		}
+		return map;
 	}
 
 	private static List<Class<?>> reloadLoadedClass(Instrumentation inst) throws UnmodifiableClassException {
