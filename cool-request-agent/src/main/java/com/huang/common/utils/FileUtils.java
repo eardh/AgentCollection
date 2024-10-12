@@ -2,7 +2,6 @@ package com.huang.common.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 
 /**
  * @Author lei.huang
@@ -11,8 +10,8 @@ import java.net.URL;
 public class FileUtils {
 
 	public static byte[] getClassResourceBytes(Class<?> clazz, String classPath) {
-		URL resource = clazz.getResource(classPath);
-		try(InputStream stream = resource.openStream()) {
+		try(InputStream stream = clazz.getResourceAsStream(classPath)) {
+			assert stream != null;
 			int len = stream.available();
 			byte[] bytes = new byte[len];
 			int writIndex = 0;
